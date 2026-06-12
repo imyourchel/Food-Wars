@@ -48,7 +48,8 @@ namespace Project
         }
         public string Display()
         {
-            string time = $"{Hour:D2} : {Minute:D2} : {Second:D2}";
+            //string time = $"{Hour:D2} : {Minute:D2} : {Second:D2}";
+            string time = $"{Minute:D2} : {Second:D2}";
             return time;
         }
         #endregion Methods

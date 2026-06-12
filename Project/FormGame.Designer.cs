@@ -35,7 +35,7 @@
             this.timerGame = new System.Windows.Forms.Timer(this.components);
             this.timerCust = new System.Windows.Forms.Timer(this.components);
             this.panelWin = new System.Windows.Forms.Panel();
-            this.labelWin = new System.Windows.Forms.Label();
+            this.labelInfoWin = new System.Windows.Forms.Label();
             this.pictureBoxQuit = new System.Windows.Forms.PictureBox();
             this.pictureBoxWinToHome = new System.Windows.Forms.PictureBox();
             this.pictureBoxButtonPlayAgain = new System.Windows.Forms.PictureBox();
@@ -267,7 +267,7 @@
             // 
             this.panelWin.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("panelWin.BackgroundImage")));
             this.panelWin.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.panelWin.Controls.Add(this.labelWin);
+            this.panelWin.Controls.Add(this.labelInfoWin);
             this.panelWin.Controls.Add(this.pictureBoxQuit);
             this.panelWin.Controls.Add(this.pictureBoxWinToHome);
             this.panelWin.Controls.Add(this.pictureBoxButtonPlayAgain);
@@ -276,14 +276,14 @@
             this.panelWin.Size = new System.Drawing.Size(1150, 650);
             this.panelWin.TabIndex = 69;
             // 
-            // labelWin
+            // labelInfoWin
             // 
-            this.labelWin.AutoSize = true;
-            this.labelWin.Location = new System.Drawing.Point(515, 295);
-            this.labelWin.Name = "labelWin";
-            this.labelWin.Size = new System.Drawing.Size(44, 16);
-            this.labelWin.TabIndex = 21;
-            this.labelWin.Text = "label2";
+            this.labelInfoWin.AutoSize = true;
+            this.labelInfoWin.Location = new System.Drawing.Point(515, 295);
+            this.labelInfoWin.Name = "labelInfoWin";
+            this.labelInfoWin.Size = new System.Drawing.Size(44, 16);
+            this.labelInfoWin.TabIndex = 21;
+            this.labelInfoWin.Text = "label2";
             // 
             // pictureBoxQuit
             // 
@@ -643,8 +643,6 @@
             this.pictureBoxBevM.TabIndex = 67;
             this.pictureBoxBevM.TabStop = false;
             this.pictureBoxBevM.Click += new System.EventHandler(this.pictureBoxBevM_Click);
-            this.pictureBoxBevM.MouseEnter += new System.EventHandler(this.pictureBoxBevM_MouseEnter);
-            this.pictureBoxBevM.MouseLeave += new System.EventHandler(this.pictureBoxBevM_MouseLeave);
             // 
             // pictureBoxBevS
             // 
@@ -657,8 +655,6 @@
             this.pictureBoxBevS.TabIndex = 66;
             this.pictureBoxBevS.TabStop = false;
             this.pictureBoxBevS.Click += new System.EventHandler(this.pictureBoxBevS_Click);
-            this.pictureBoxBevS.MouseEnter += new System.EventHandler(this.pictureBoxBevS_MouseEnter);
-            this.pictureBoxBevS.MouseLeave += new System.EventHandler(this.pictureBoxBevS_MouseLeave);
             // 
             // pictureBoxBevL
             // 
@@ -670,8 +666,6 @@
             this.pictureBoxBevL.TabIndex = 65;
             this.pictureBoxBevL.TabStop = false;
             this.pictureBoxBevL.Click += new System.EventHandler(this.pictureBoxBevL_Click);
-            this.pictureBoxBevL.MouseEnter += new System.EventHandler(this.pictureBoxBevL_MouseEnter);
-            this.pictureBoxBevL.MouseLeave += new System.EventHandler(this.pictureBoxBevL_MouseLeave);
             // 
             // labelIncomeNow
             // 
@@ -906,6 +900,7 @@
             this.labelDisplayDataPlayer.Size = new System.Drawing.Size(111, 66);
             this.labelDisplayDataPlayer.TabIndex = 31;
             this.labelDisplayDataPlayer.Text = "Prev. Time :\r\nBest Time   :\r\nHigh Score :\r\n";
+            this.labelDisplayDataPlayer.Click += new System.EventHandler(this.labelDisplayDataPlayer_Click);
             // 
             // pictureBoxDisplayPlayer
             // 
@@ -1345,11 +1340,11 @@
             this.labelBestTimeImpossible.AutoSize = true;
             this.labelBestTimeImpossible.BackColor = System.Drawing.Color.Transparent;
             this.labelBestTimeImpossible.Font = new System.Drawing.Font("Franklin Gothic Medium", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelBestTimeImpossible.Location = new System.Drawing.Point(860, 276);
+            this.labelBestTimeImpossible.Location = new System.Drawing.Point(902, 276);
             this.labelBestTimeImpossible.Name = "labelBestTimeImpossible";
-            this.labelBestTimeImpossible.Size = new System.Drawing.Size(179, 38);
+            this.labelBestTimeImpossible.Size = new System.Drawing.Size(117, 38);
             this.labelBestTimeImpossible.TabIndex = 44;
-            this.labelBestTimeImpossible.Text = "00 : 00 : 00";
+            this.labelBestTimeImpossible.Text = "00 : 00";
             this.labelBestTimeImpossible.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelBestTimeHard
@@ -1357,11 +1352,11 @@
             this.labelBestTimeHard.AutoSize = true;
             this.labelBestTimeHard.BackColor = System.Drawing.Color.Transparent;
             this.labelBestTimeHard.Font = new System.Drawing.Font("Franklin Gothic Medium", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelBestTimeHard.Location = new System.Drawing.Point(602, 276);
+            this.labelBestTimeHard.Location = new System.Drawing.Point(645, 276);
             this.labelBestTimeHard.Name = "labelBestTimeHard";
-            this.labelBestTimeHard.Size = new System.Drawing.Size(179, 38);
+            this.labelBestTimeHard.Size = new System.Drawing.Size(117, 38);
             this.labelBestTimeHard.TabIndex = 43;
-            this.labelBestTimeHard.Text = "00 : 00 : 00";
+            this.labelBestTimeHard.Text = "00 : 00";
             this.labelBestTimeHard.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelBestTimeMedium
@@ -1369,11 +1364,11 @@
             this.labelBestTimeMedium.AutoSize = true;
             this.labelBestTimeMedium.BackColor = System.Drawing.Color.Transparent;
             this.labelBestTimeMedium.Font = new System.Drawing.Font("Franklin Gothic Medium", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelBestTimeMedium.Location = new System.Drawing.Point(347, 276);
+            this.labelBestTimeMedium.Location = new System.Drawing.Point(385, 276);
             this.labelBestTimeMedium.Name = "labelBestTimeMedium";
-            this.labelBestTimeMedium.Size = new System.Drawing.Size(179, 38);
+            this.labelBestTimeMedium.Size = new System.Drawing.Size(117, 38);
             this.labelBestTimeMedium.TabIndex = 42;
-            this.labelBestTimeMedium.Text = "00 : 00 : 00";
+            this.labelBestTimeMedium.Text = "00 : 00";
             this.labelBestTimeMedium.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelBestTimeEasy
@@ -1381,12 +1376,13 @@
             this.labelBestTimeEasy.AutoSize = true;
             this.labelBestTimeEasy.BackColor = System.Drawing.Color.Transparent;
             this.labelBestTimeEasy.Font = new System.Drawing.Font("Franklin Gothic Medium", 19.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelBestTimeEasy.Location = new System.Drawing.Point(84, 271);
+            this.labelBestTimeEasy.Location = new System.Drawing.Point(125, 276);
             this.labelBestTimeEasy.Name = "labelBestTimeEasy";
-            this.labelBestTimeEasy.Size = new System.Drawing.Size(179, 38);
+            this.labelBestTimeEasy.Size = new System.Drawing.Size(117, 38);
             this.labelBestTimeEasy.TabIndex = 41;
-            this.labelBestTimeEasy.Text = "00 : 00 : 00";
+            this.labelBestTimeEasy.Text = "00 : 00";
             this.labelBestTimeEasy.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelBestTimeEasy.Click += new System.EventHandler(this.labelBestTimeEasy_Click);
             // 
             // labelImpossible
             // 
@@ -1548,6 +1544,7 @@
             this.labelHighScoreEasy.TabIndex = 20;
             this.labelHighScoreEasy.Text = "1234";
             this.labelHighScoreEasy.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelHighScoreEasy.Click += new System.EventHandler(this.labelHighScoreEasy_Click);
             // 
             // pictureBoxBackCreateLoadPlayer
             // 
@@ -1671,18 +1668,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.ClientSize = new System.Drawing.Size(1149, 650);
-            this.Controls.Add(this.panelDifficulty);
-            this.Controls.Add(this.panelTutorial);
             this.Controls.Add(this.panelGame);
-            this.Controls.Add(this.panelSetting);
             this.Controls.Add(this.panelLose);
             this.Controls.Add(this.panelWin);
+            this.Controls.Add(this.panelDifficulty);
+            this.Controls.Add(this.panelTutorial);
+            this.Controls.Add(this.panelSetting);
             this.Controls.Add(this.buttonExit);
             this.Controls.Add(this.buttonPlay);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "FormGame";
             this.Text = "Food Wars";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormGame_FormClosing);
             this.Load += new System.EventHandler(this.FormGame_Load);
             this.panelWin.ResumeLayout(false);
             this.panelWin.PerformLayout();
@@ -1882,7 +1880,7 @@
         private System.Windows.Forms.PictureBox pictureBoxButtonPlayAgain;
         private System.Windows.Forms.PictureBox pictureBoxQuit;
         private System.Windows.Forms.PictureBox pictureBoxWinToHome;
-        private System.Windows.Forms.Label labelWin;
+        private System.Windows.Forms.Label labelInfoWin;
         private System.Windows.Forms.Panel panelLose;
         private System.Windows.Forms.Label labelLose;
         private System.Windows.Forms.PictureBox pictureBoxExit;

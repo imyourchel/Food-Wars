@@ -26,12 +26,12 @@ namespace Project
         List<Items> listOfItems = new List<Items>();
         Items item;
         Customers customers;
-        Customers customer2;
+        Customers customer2;      
+        int tempScore = 0;
+        //int tempIncome=0;
+        //List<int> listTempIncome = new List<int>();
 
-        int tempIncome=0;
-        List<int> listTempIncome = new List<int>();
-
-        int custEasy = 3;
+        int custEasy = 8;
         int custMedium = 15;
         int custHard = 23;
         int custImpossible = 32;
@@ -98,67 +98,256 @@ namespace Project
             buttonPlay.Visible = false;             
 
         }
+        private void EnsurePlayerData()
+        {
+            if (player == null)
+            {
+                player = new Players(
+                    "Chelo",
+                    0,
+                    Properties.Resources.male
+                );
+            }
+
+            if (player.HighScore == null)
+            {
+                player.HighScore = new List<int>();
+            }
+
+            while (player.HighScore.Count < 4)
+            {
+                player.HighScore.Add(0);
+            }
+
+            if (player.BestTime == null)
+            {
+                player.BestTime = new List<Time>();
+            }
+
+            while (player.BestTime.Count < 4)
+            {
+                player.BestTime.Add(new Time(0, 0, 0));
+            }
+
+            if (player.PrevTime == null)
+            {
+                player.PrevTime = new List<Time>();
+            }
+
+            while (player.PrevTime.Count < 4)
+            {
+                player.PrevTime.Add(new Time(0, 0, 0));
+            }
+
+            player.Income = 0;
+        }
+        private void CreateDefaultPlayer()
+        {
+            player = new Players(
+                "Chelo",
+                0,
+                Properties.Resources.male
+            );
+
+            player.HighScore = new List<int>
+    {
+        0, 0, 0, 0
+    };
+
+            player.BestTime = new List<Time>
+    {
+        new Time(0, 0, 0),
+        new Time(0, 0, 0),
+        new Time(0, 0, 0),
+        new Time(0, 0, 0)
+    };
+
+            player.PrevTime = new List<Time>
+    {
+        new Time(0, 0, 0),
+        new Time(0, 0, 0),
+        new Time(0, 0, 0),
+        new Time(0, 0, 0)
+    };
+
+            listOfPlayer.Clear();
+            listOfPlayer.Add(player);
+        }
         private void FormGame_Load(object sender, EventArgs e)
         {
             PlaySound("game");
+
+            if (File.Exists("PlayerData.dat"))
+            {
+                ReadFromFile();
+            }
+
+            // Jika file tidak ada atau gagal dibaca
+            if (player == null)
+            {
+                CreateDefaultPlayer();
+            }
+
+            EnsurePlayerData();
+
+            pictureBoxDisplayPlayer.Image = player.Picture;
+            pictureBoxDisplayPlayer.SizeMode =
+                PictureBoxSizeMode.StretchImage;
+
             BackgroundVisible();
+
+            buttonPlay.Cursor = Cursors.Hand;
+            buttonExit.Cursor = Cursors.Hand;
+
             panelDifficulty.Visible = false;
             panelTutorial.Visible = false;
             panelGame.Visible = false;
             panelSetting.Visible = false;
-            panelWin.Visible= false;
+            panelWin.Visible = false;
             panelLose.Visible = false;
-            timerCust.Enabled = false;
-            timerCust.Interval= 1000;
-            timerGame.Enabled = false;
-            timerGame.Interval= 1000;
-            timerEmotion1.Enabled = false;
-            timerEmotion1.Interval= 1000;
-            timerEmotion2.Enabled = false;
+
+            timerCust.Stop();
+            timerCust.Interval = 1000;
+
+            timerGame.Stop();
+            timerGame.Interval = 1000;
+
+            timerEmotion1.Stop();
+            timerEmotion1.Interval = 1000;
+
+            timerEmotion2.Stop();
             timerEmotion2.Interval = 1000;
         }
         private void buttonPlay_Click(object sender, EventArgs e)
         {
-            PlaySound("button");
-            BackgroundInvisible();
-            panelDifficulty.Visible = true;
             try
             {
                 PlaySound("button");
 
-                player = new Players("chel", 0, Properties.Resources.female);
-                player.HighScore = new List<int> { 0, 0, 0, 0 };
-                time = new Time(0, 0, 0);
-                stockBear = new List<bool> { true, true, true, true, true };
-                stockRobot = new List<bool> { true, true, true, true, true };
-                stockTumblr = new List<bool> { true, true, true, true, true };
-
-                player.BestTime = new List<Time> { time, time, time, time };
-                player.PrevTime = new List<Time> { time, time, time, time };
-
-                //display Panel Difficulty
+                BackgroundInvisible();
                 panelDifficulty.Visible = true;
-                panelDifficulty.BackgroundImage = Properties.Resources.bg_Difficulty;
-                panelDifficulty.BackgroundImageLayout = ImageLayout.Stretch;
 
-                this.labelEasy.Font = new System.Drawing.Font("Franklin Gothic Medium", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                this.labelMedium.Font = new System.Drawing.Font("Franklin Gothic Medium", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                this.labelHard.Font = new System.Drawing.Font("Franklin Gothic Medium", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-                this.labelImpossible.Font = new System.Drawing.Font("Franklin Gothic Medium", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                // Buat player hanya jika belum tersedia
+                if (player == null)
+                {
+                    player = new Players(
+                        "Chelo",
+                        0,
+                        Properties.Resources.male
+                    );
 
-                this.labelHighScoreEasy.Text = player.HighScore[0].ToString();
-                this.labelHighScoreMedium.Text = player.HighScore[1].ToString();
-                this.labelHighScoreHard.Text = player.HighScore[2].ToString();
-                this.labelHighScoreImpossible.Text = player.HighScore[3].ToString();
+                    player.HighScore = new List<int>
+            {
+                0, 0, 0, 0
+            };
 
-                this.labelBestTimeEasy.Text = player.BestTime[0].Display();
-                this.labelBestTimeMedium.Text = player.BestTime[1].Display();
-                this.labelBestTimeHard.Text = player.BestTime[2].Display();
-                this.labelBestTimeImpossible.Text = player.BestTime[3].Display();
+                    player.BestTime = new List<Time>
+            {
+                new Time(0, 0, 0),
+                new Time(0, 0, 0),
+                new Time(0, 0, 0),
+                new Time(0, 0, 0)
+            };
+
+                    player.PrevTime = new List<Time>
+            {
+                new Time(0, 0, 0),
+                new Time(0, 0, 0),
+                new Time(0, 0, 0),
+                new Time(0, 0, 0)
+            };
+                }
+
+                // Stok wajib diinisialisasi walaupun player berasal dari file
+                if (stockBear == null)
+                {
+                    stockBear = new List<bool>
+            {
+                true, true, true, true, true
+            };
+                }
+
+                if (stockTumblr == null)
+                {
+                    stockTumblr = new List<bool>
+            {
+                true, true, true, true, true
+            };
+                }
+
+                if (stockRobot == null)
+                {
+                    stockRobot = new List<bool>
+            {
+                true, true, true, true, true
+            };
+                }
+
+                // Pastikan data player tidak null atau kurang dari 4
+                EnsurePlayerData();
+
+                panelDifficulty.BackgroundImage =
+                    Properties.Resources.bg_Difficulty;
+
+                panelDifficulty.BackgroundImageLayout =
+                    ImageLayout.Stretch;
+
+                labelEasy.Font =
+                    new Font("Franklin Gothic Medium", 18F, FontStyle.Regular);
+
+                labelMedium.Font =
+                    new Font("Franklin Gothic Medium", 18F, FontStyle.Regular);
+
+                labelHard.Font =
+                    new Font("Franklin Gothic Medium", 18F, FontStyle.Regular);
+
+                labelImpossible.Font =
+                    new Font("Franklin Gothic Medium", 18F, FontStyle.Regular);
+
+                labelHighScoreEasy.Text =
+                    player.HighScore[0].ToString();
+
+                labelHighScoreMedium.Text =
+                    player.HighScore[1].ToString();
+
+                labelHighScoreHard.Text =
+                    player.HighScore[2].ToString();
+
+                labelHighScoreImpossible.Text =
+                    player.HighScore[3].ToString();
+
+                labelBestTimeEasy.Text =
+                    player.BestTime[0].Display();
+
+                labelBestTimeMedium.Text =
+                    player.BestTime[1].Display();
+
+                labelBestTimeHard.Text =
+                    player.BestTime[2].Display();
+
+                labelBestTimeImpossible.Text =
+                    player.BestTime[3].Display();
+
+                labelEasy.Cursor = Cursors.Hand;
+                labelMedium.Cursor = Cursors.Hand;
+                labelHard.Cursor = Cursors.Hand;
+                labelImpossible.Cursor = Cursors.Hand;
+
+                pictureBoxEasy.Cursor = Cursors.Hand;
+                pictureBoxMedium.Cursor = Cursors.Hand;
+                pictureBoxHard.Cursor = Cursors.Hand;
+                pictureBoxImpossible.Cursor = Cursors.Hand;
+
+                buttonNextTutorial.Cursor = Cursors.Hand;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message, "ERROR");
+                MessageBox.Show(
+                    ex.ToString(),
+                    "ERROR",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
             }
         }
         private void buttonExit_Click(object sender, EventArgs e)
@@ -182,7 +371,7 @@ namespace Project
         private void buttonNextTutorial_Click(object sender, EventArgs e)
         {
             try
-            {
+            {                
                 PlaySound("button");
                 if (labelEasy.Font.Name == "Franklin Gothic Demi")
                 {
@@ -224,12 +413,16 @@ namespace Project
                 {
                     throw (new ArgumentException("Select Difficulty Level"));
                 }
+                buttonStartGame.Cursor = Cursors.Hand;
                 buttonBackReceipe.Visible = false;
                 panelDifficulty.Visible = false;
                 panelTutorial.Visible = true;
                 panelTutorial.BackgroundImage = Properties.Resources.bg_Tutorial;
                 panelTutorial.BackgroundImageLayout = ImageLayout.Stretch;
-                listOfPlayer.Add(player);
+                if (!listOfPlayer.Contains(player))
+                {
+                    listOfPlayer.Add(player);
+                }
             }
             catch(Exception ex)
             {
@@ -239,52 +432,121 @@ namespace Project
 
         //panel Tutorial
         private void buttonStartGame_Click(object sender, EventArgs e)
-        {            
-            PlaySound("button");
-            PlaySound("play");
-
-            first = true;
-            last = false;
-            pictureBoxCustomer2.Visible = true;
-            panelDialog2.Visible = true;
-
-            panelTutorial.Visible = false;
-            panelGame.Visible = true;
-            panelGame.BackgroundImageLayout = ImageLayout.Stretch;
-            time = new Time(0, 0, timeChoose);
-            labelRemainingTime.Text = time.Display();
-            timerGame.Start();
-            labelRemainingCustomers.Text = "Remaining Customers : " + remainingCusts.ToString();
-            labelNamePlayer.Text = player.Name;
-            StallDisplay();
-            timerEmotion1.Start();
-            timerEmotion2.Start();
-            incTimerEmotion1 = 0;
-            incTimerEmotion2 = 0;
-
-            //Selected level
-            int selected;
-            if (easy)
+        {
+            try
             {
-                selected = 0;
-            }
-            else if (medium)
-            {
-                selected = 1;
-            }
-            else if (hard)
-            {
-                selected = 2;
-            }
-            else
-            {
-                selected = 3;
-            }
-            labelDisplayDataPlayer.Text = player.Display(selected);
-            labelIncomeNow.Text = player.Income.ToString();
+                PlaySound("button");
+                PlaySound("play");
 
-            CreateCustomers();
-            CreateCustomers2();
+                if (player == null)
+                {
+                    CreateDefaultPlayer();
+                }
+
+                EnsurePlayerData();
+
+                if (stockBear == null)
+                {
+                    stockBear = new List<bool>
+            {
+                true, true, true, true, true
+            };
+                }
+
+                if (stockTumblr == null)
+                {
+                    stockTumblr = new List<bool>
+            {
+                true, true, true, true, true
+            };
+                }
+
+                if (stockRobot == null)
+                {
+                    stockRobot = new List<bool>
+            {
+                true, true, true, true, true
+            };
+                }
+
+                if (!easy && !medium && !hard && !impossible)
+                {
+                    throw new InvalidOperationException(
+                        "Pilih tingkat kesulitan terlebih dahulu."
+                    );
+                }
+
+                listOfItems.Clear();
+
+                player.Income = 0;
+                labelIncomeNow.Text = "0";
+
+                tempScore = 0;
+                selectedIngCount = 0;
+                incTimerCust = 0;
+
+                first = true;
+                last = false;
+                timeFirst = true;
+
+                tempCust = null;
+                tempOrder = null;
+                customers = null;
+                customer2 = null;
+
+                pictureBoxServe.Image = null;
+                pictureBoxServe.Tag = "none";
+
+                pictureBoxCustomer2.Visible = true;
+                panelDialog1.Visible = true;
+                panelDialog2.Visible = true;
+
+                panelTutorial.Visible = false;
+                panelGame.Visible = true;
+                panelGame.BackgroundImageLayout =
+                    ImageLayout.Stretch;
+
+                time = new Time(0, 0, timeChoose);
+
+                labelRemainingTime.Text = time.Display();
+                labelRemainingCustomers.Text =
+                    "Remaining Customers : " + remainingCusts;
+
+                labelNamePlayer.Text = player.Name;
+
+                StallDisplay();
+
+                CreateCustomers();
+                CreateCustomers2();
+
+                incTimerEmotion1 = 0;
+                incTimerEmotion2 = 0;
+
+                timerGame.Start();
+                timerEmotion1.Start();
+                timerEmotion2.Start();
+
+                int selectedLevel = easy ? 0 :
+                                    medium ? 1 :
+                                    hard ? 2 : 3;
+
+                labelDisplayDataPlayer.Text =
+                    player.Display(selectedLevel);
+            }
+            catch (Exception ex)
+            {
+                timerCust.Stop();
+                timerGame.Stop();
+                timerEmotion1.Stop();
+                timerEmotion2.Stop();
+
+                MessageBox.Show(
+                    ex.ToString(),
+                    "Gagal memulai permainan",
+                    MessageBoxButtons.OK,
+                    MessageBoxIcon.Error
+                );
+            }
         }
         #endregion home - tutorial
 
@@ -341,13 +603,7 @@ namespace Project
         private void pictureBoxRestart_Click(object sender, EventArgs e)
         {
             PlaySound("button");
-            foreach(int i in listTempIncome)
-            {
-                tempIncome += i;
-            }
-            player.Income = (player.Income) - tempIncome;
-            tempIncome = 0;
-            listTempIncome.Clear();
+            player.Income = 0;
             panelSetting.Visible = false;
             if (labelEasy.Font.Name == "Franklin Gothic Demi")
             {
@@ -369,12 +625,7 @@ namespace Project
         }
         private void pictureBoxButtonPlayAgain_Click(object sender, EventArgs e)
         {
-            PlaySound("button");
-            foreach(int i in listTempIncome)
-            {
-                tempIncome += i;
-            }
-            player.Income = (player.Income) - tempIncome;
+            PlaySound("button");           
             panelWin.Visible = false;
             if (labelEasy.Font.Name == "Franklin Gothic Demi")
             {
@@ -453,22 +704,27 @@ namespace Project
         {
             if (status == "enter")
             {
-                pictureBox.BackColor = Color.White;
+                pictureBox.BackColor = Color.Transparent;
+                pictureBox.Cursor = Cursors.Hand;  // ← tambah ini
             }
             else if (status == "leave")
             {
                 pictureBox.BackColor = Color.Transparent;
+                pictureBox.Cursor = Cursors.Default;  // ← tambah ini
             }
         }
+
         private void ChangePictureBoxColorBev(PictureBox pictureBox, string status, Color color)
         {
             if (status == "enter")
             {
-                pictureBox.BackColor = Color.Silver;
+                pictureBox.BackColor = Color.Transparent;
+                pictureBox.Cursor = Cursors.Hand;  // ← tambah ini
             }
             else if (status == "leave")
             {
-                pictureBox.BackColor = color;
+                pictureBox.BackColor = Color.Transparent; ;
+                pictureBox.Cursor = Cursors.Default;  // ← tambah ini
             }
         }
 
@@ -787,41 +1043,7 @@ namespace Project
             ChangePictureBoxColor(pictureBoxMayo, "leave");
         }
 
-        private void pictureBoxBevL_MouseEnter(object sender, EventArgs e)
-        {
-            Color color = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(177)))), ((int)(((byte)(177)))));
-            ChangePictureBoxColorBev(pictureBoxBevL, "enter",color);
-        }
-
-        private void pictureBoxBevL_MouseLeave(object sender, EventArgs e)
-        {
-            Color color = System.Drawing.Color.FromArgb(((int)(((byte)(102)))), ((int)(((byte)(177)))), ((int)(((byte)(177)))));
-            ChangePictureBoxColorBev(pictureBoxBevL, "leave", color);
-        }
-
-        private void pictureBoxBevM_MouseEnter(object sender, EventArgs e)
-        {
-            Color color = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(58)))), ((int)(((byte)(60)))));
-            ChangePictureBoxColorBev(pictureBoxBevM, "enter", color);
-        }
-
-        private void pictureBoxBevM_MouseLeave(object sender, EventArgs e)
-        {
-            Color color = System.Drawing.Color.FromArgb(((int)(((byte)(193)))), ((int)(((byte)(58)))), ((int)(((byte)(60)))));
-            ChangePictureBoxColorBev(pictureBoxBevM, "leave", color);
-        }
-
-        private void pictureBoxBevS_MouseEnter(object sender, EventArgs e)
-        {
-            Color color = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(167)))), ((int)(((byte)(78)))));
-            ChangePictureBoxColorBev(pictureBoxBevS, "enter", color);
-        }
-
-        private void pictureBoxBevS_MouseLeave(object sender, EventArgs e)
-        {
-            Color color = System.Drawing.Color.FromArgb(((int)(((byte)(249)))), ((int)(((byte)(167)))), ((int)(((byte)(78)))));
-            ChangePictureBoxColorBev(pictureBoxBevS, "leave", color);
-        }
+        
         #endregion Foods & Beverages
         #endregion PictureBox Mouse        
 
@@ -1594,7 +1816,7 @@ namespace Project
             #endregion Beverages
 
             #region Merchandise                 
-            item = new Merchandise(stockBear, "bear", Properties.Resources.bear, 100);
+            item = new Merchandise(stockBear, "bear", Properties.Resources.bear, 50);
             listOfItems.Add(item);
             
             pictureBoxBear1.Enabled = true;
@@ -1622,7 +1844,7 @@ namespace Project
             pictureBoxBear5.SizeMode = PictureBoxSizeMode.StretchImage;
             displayBear(item);
 
-            item = new Merchandise(stockTumblr, "tumblr", Properties.Resources.tumblr, 100);
+            item = new Merchandise(stockTumblr, "tumblr", Properties.Resources.tumblr,50);
             listOfItems.Add(item);
             pictureBoxTumblr1.Enabled = true;
             pictureBoxTumblr2.Enabled = true;
@@ -1649,7 +1871,7 @@ namespace Project
             pictureBoxTumblr5.SizeMode = PictureBoxSizeMode.StretchImage;
             displayTumblr(item);
 
-            item = new Merchandise(stockRobot, "robot", Properties.Resources.robot, 100);
+            item = new Merchandise(stockRobot, "robot", Properties.Resources.robot, 50);
             listOfItems.Add(item);
             pictureBoxRobot1.Enabled = true;
             pictureBoxRobot2.Enabled = true;
@@ -1690,15 +1912,23 @@ namespace Project
             pictureBoxServe.Image = order.Picture;
             pictureBoxServe.SizeMode = PictureBoxSizeMode.StretchImage;
             pictureBoxServe.Tag = "done";
+
             pictureBoxOrder1.Image = Properties.Resources.coin;
-            listTempIncome.Add(order.Price);
+
+            // Tambahkan pendapatan pada game sekarang
             player.Income += order.Price;
+
+            labelIncomeNow.Text = player.Income.ToString();
+
             selectedIngCount = 0;
             remainingCusts--;
-            labelRemainingCustomers.Text = "Remaining Customers: " + remainingCusts.ToString();
-            labelIncomeNow.Text=player.Income.ToString();
+
+            labelRemainingCustomers.Text =
+                "Remaining Customers: " + remainingCusts;
+
             incTimerCust = 0;
             timerCust.Start();
+
             PlaySound("correct");
         }
         private void WrongOrder()
@@ -1782,14 +2012,17 @@ namespace Project
                         merchOrder.Sell();
                         if (merchOrder.Name == "bear")
                         {
+                            stockBear = ((Merchandise)listOfItems[9]).ListStock;
                             displayBear(merchOrder);
                         }
                         if (merchOrder.Name == "tumblr")
                         {
+                            stockTumblr = ((Merchandise)listOfItems[10]).ListStock;
                             displayTumblr(merchOrder);
                         }
                         if (merchOrder.Name == "robot")
                         {
+                            stockRobot = ((Merchandise)listOfItems[11]).ListStock;
                             displayRobot(merchOrder);
                         }
                         CorrectOrder(merchOrder);
@@ -1843,36 +2076,36 @@ namespace Project
             pictureBoxOrder1.Image = customers.OrderItem.Picture;
             pictureBoxOrder1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
+        private Random rng = new Random(); // deklarasi di class level
+
         private void CreateCustomerOrder2()
         {
-            if(last == false)
+            if (last == false)
             {
                 if (first == false)
                 {
                     CreateCustomerOrder();
                 }
-                Random numRandomItemType = new Random();
-                int randomItemType = numRandomItemType.Next(0, 3);
-                randomItemType = 2;
-                if (randomItemType == 0) 
+
+                customer2 = new Customers("RandomName", Properties.Resources.dustin, "male", null); // buat baru
+
+                int randomItemType = rng.Next(0, 3);
+                if (randomItemType == 0)
                 {
-                    Random numRandomFood = new Random();
-                    int randomFood = numRandomFood.Next(0, 3);
+                    int randomFood = rng.Next(0, 3);
                     customer2.OrderItem = listOfItems[randomFood];
                 }
                 else if (randomItemType == 1)
                 {
-                    Random numRandomBev = new Random();
-                    int randomBev = numRandomBev.Next(3, 9);
+                    int randomBev = rng.Next(3, 9);
                     customer2.OrderItem = listOfItems[randomBev];
                 }
                 else if (randomItemType == 2)
                 {
-                    Random numRandomMerch = new Random();
-                    int randomMerch = numRandomMerch.Next(9, 12);
-                    randomMerch = 9;
+                    int randomMerch = rng.Next(9, 12);
                     customer2.OrderItem = listOfItems[randomMerch];
                 }
+
                 tempOrder = customer2;
                 pictureBoxOrder2.Image = tempOrder.OrderItem.Picture;
                 pictureBoxOrder2.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -1954,24 +2187,24 @@ namespace Project
         }
         private void timerCust_Tick(object sender, EventArgs e)
         {
-            incTimerCust++;            
+            incTimerCust++;
             if (incTimerCust == 1 && pictureBoxServe.Tag.ToString() == "none")
             {
-                if (first == true){ CreateCustomerOrder();CreateCustomerOrder2(); }
+                if (first == true) { CreateCustomerOrder(); CreateCustomerOrder2(); }
                 else { CreateCustomerOrder2(); }
                 timerCust.Stop();
                 first = false;
             }
             else if (incTimerCust == 1 && pictureBoxServe.Tag.ToString() == "done")
             {
-                panelDialog1.Visible= true;
+                panelDialog1.Visible = true;
                 pictureBoxServe.Image = null;
                 pictureBoxCustomer1.Image = null;
                 incTimerCust = 0;
                 timerCust.Stop();
                 if (remainingCusts > 0)
                 {
-                    if(remainingCusts == 1)
+                    if (remainingCusts == 1)
                     {
                         //buat orang terakhir tidak ke display
                         last = true;
@@ -1982,23 +2215,52 @@ namespace Project
                     else
                     {
                         CreateCustomers2();
-                    }                   
-                }                
-                                    
+                    }
+                }
+
                 else
                 {
+                    timerCust.Stop();
                     timerGame.Stop();
+                    timerEmotion1.Stop();
+                    timerEmotion2.Stop();
+
                     panelGame.Visible = false;
                     panelWin.Visible = true;
+
                     PlaySound("win");
-                    foreach (Items i in listOfItems)
+
+                    tempScore = CalculateScore();
+
+                    labelInfoWin.Text =
+                        "Remaining time\t = " + time.Display() + "\n" +
+                        "Income\t\t = " + player.Income + "\n" +
+                        "Score\t\t = " + tempScore;
+
+                    int selectedLevel = easy ? 0 :
+                                        medium ? 1 :
+                                        hard ? 2 : 3;
+
+                    if (tempScore > player.HighScore[selectedLevel])
                     {
-                        int a = 0;
-                        if (i  is Merchandise)
-                        {
-                            player.StockMerchandise[a] = i;
-                        }
+                        player.HighScore[selectedLevel] = tempScore;
                     }
+
+                    int currentRemainingSec = time.Convert();
+                    int bestRemainingSec =
+                        player.BestTime[selectedLevel].Convert();
+
+                    if (bestRemainingSec == 0 ||
+                        currentRemainingSec > bestRemainingSec)
+                    {
+                        player.BestTime[selectedLevel] =
+                            new Time(time.Hour, time.Minute, time.Second);
+                    }
+
+                    player.PrevTime[selectedLevel] =
+                        new Time(time.Hour, time.Minute, time.Second);
+
+                    SaveToFile();
                 }
             }
         }
@@ -2013,71 +2275,76 @@ namespace Project
                     timerGame.Stop();
                     panelGame.Visible = false;
                     panelLose.Visible = true;
-                    PlaySound("lose");
+                    PlaySound("lose");                   
+                    labelLose.Text = "Remaining Customers\t = " + remainingCusts + "\n" +
+                                      "Income\t\t = " + player.Income + "\n" +
+                                      "Score\t\t = 0";
+                    
+
+                    int selectedLevel = easy ? 0 : medium ? 1 : hard ? 2 : 3;
+                    player.PrevTime[selectedLevel] = new Time(0, 0, 0); // waktu habis = 0
+
+                    SaveToFile();
                 }
             }
         }
         private void timerEmotion2_Tick(object sender, EventArgs e)
-        {
+        {                      
             incTimerEmotion2++;
-            Image image2 = null;
+            Image image2;
             if (incTimerEmotion2 <= 7)
             {
                 image2 = Properties.Resources.happy;
             }
-            else if (incTimerEmotion2 > 7 && incTimerEmotion2 <= 14)
+            else if (incTimerEmotion2 <= 14)
             {
                 image2 = Properties.Resources.flat;
             }
-            else if (incTimerEmotion2 > 7)
+            else
             {
                 image2 = Properties.Resources.angry;
             }
+
             pictureBoxEmotion2.Image = image2;
             pictureBoxEmotion2.SizeMode = PictureBoxSizeMode.StretchImage;
         }
         private void timerEmotion1_Tick(object sender, EventArgs e)
         {
-            if(timeFirst == true)
+            incTimerEmotion1++;
+            Image image;
+            if (timeFirst)
             {
-                Image image = null;
-                incTimerEmotion1++;
                 if (incTimerEmotion1 <= 4)
                 {
                     image = Properties.Resources.happy;
                 }
-                else if (incTimerEmotion1 > 4 && incTimerEmotion1 <= 7)
+                else if (incTimerEmotion1 <= 7)
                 {
                     image = Properties.Resources.flat;
                 }
-                else if (incTimerEmotion1 > 7)
+                else
                 {
                     image = Properties.Resources.angry;
                 }
-                pictureBoxEmotion1.Image = image;
-                pictureBoxEmotion1.SizeMode = PictureBoxSizeMode.StretchImage;                
             }
             else
-            {                          
-                Image image = null;
-                incTimerEmotion1++;
+            {
                 if (incTimerEmotion1 <= 8)
                 {
                     image = Properties.Resources.happy;
                 }
-                else if (incTimerEmotion1 > 8 && incTimerEmotion1 <= 14)
+                else if (incTimerEmotion1 <= 14)
                 {
                     image = Properties.Resources.flat;
                 }
-                else if (incTimerEmotion1 > 14)
+                else
                 {
                     image = Properties.Resources.angry;
                 }
-                pictureBoxEmotion1.Image = image;
-                pictureBoxEmotion1.SizeMode = PictureBoxSizeMode.StretchImage;
-                incTimerEmotion1++;
             }
-            
+
+            pictureBoxEmotion1.Image = image;
+            pictureBoxEmotion1.SizeMode = PictureBoxSizeMode.StretchImage;
         }
 
         private void buttonBuyMerchandiseBear_Click(object sender, EventArgs e)
@@ -2085,58 +2352,75 @@ namespace Project
             PlaySound("click");
             Items item = listOfItems[9];
             Merchandise merch = (Merchandise)item;
-            bool full = true;
-            foreach (bool i in merch.ListStock)
+
+            bool full = merch.ListStock.All(s => s == true);
+            if (!full)
             {
-                if(i == false)
+                if (player.Income >= merch.Price)
                 {
-                    full = false; break;
+                    player.Income -= merch.Price;
+                    labelIncomeNow.Text = player.Income.ToString();
+                    merch.Buy();
+                }
+                else
+                {
+                    MessageBox.Show("Income tidak cukup untuk membeli Bear!\n" +
+                                    "Harga : " + merch.Price + "\n" +
+                                    "Income: " + player.Income,
+                                    "Pembelian Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
             }
-            if(full == false)
-            {
-                //pengecekan income (cukup atau tidak)
-                merch.Buy();                
-            }            
             displayBear(item);
         }
+
         private void buttonBuyMerchandiseTumblr_Click(object sender, EventArgs e)
         {
             PlaySound("click");
             Items item = listOfItems[10];
             Merchandise merch = (Merchandise)item;
-            bool full = true;
-            foreach (bool i in merch.ListStock)
+
+            bool full = merch.ListStock.All(s => s == true);
+            if (!full)
             {
-                if (i == false)
+                if (player.Income >= merch.Price)
                 {
-                    full = false; break;
+                    player.Income -= merch.Price;
+                    labelIncomeNow.Text = player.Income.ToString();
+                    merch.Buy();
                 }
-            }
-            if (full == false)
-            {
-                //pengecekan income (cukup atau tidak)
-                merch.Buy();                
+                else
+                {
+                    MessageBox.Show("Income tidak cukup untuk membeli Tumblr!\n" +
+                                    "Harga : " + merch.Price + "\n" +
+                                    "Income: " + player.Income,
+                                    "Pembelian Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             displayTumblr(item);
         }
+
         private void buttonBuyMerchandiseRobot_Click(object sender, EventArgs e)
         {
             PlaySound("click");
             Items item = listOfItems[11];
             Merchandise merch = (Merchandise)item;
-            bool full = true;
-            foreach (bool i in merch.ListStock)
+
+            bool full = merch.ListStock.All(s => s == true);
+            if (!full)
             {
-                if (i == false)
+                if (player.Income >= merch.Price)
                 {
-                    full = false; break;
+                    player.Income -= merch.Price;
+                    labelIncomeNow.Text = player.Income.ToString();
+                    merch.Buy();
                 }
-            }
-            if (full == false)
-            {
-                //pengecekan income (cukup atau tidak)
-                merch.Buy();
+                else
+                {
+                    MessageBox.Show("Income tidak cukup untuk membeli Robot!\n" +
+                                    "Harga : " + merch.Price + "\n" +
+                                    "Income: " + player.Income,
+                                    "Pembelian Gagal", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
             }
             displayRobot(item);
         }
@@ -2406,69 +2690,166 @@ namespace Project
         #endregion Volume up down
         private void PlaySound(string type)
         {
-            //if (type == "fail")
-            //{
-            //    sound1.URL = Application.StartupPath + "\\sound\\fail.mp3";
-            //    sound1.controls.play();
-            //}
-            //else if (type == "correct")
-            //{
-            //    sound1.URL = Application.StartupPath + "\\sound\\correct.mp3";
-            //    sound1.controls.play();
-            //}
-            //else if (type == "button")
-            //{
-            //    sound1.URL = Application.StartupPath + "\\sound\\button.mp3";
-            //    sound1.controls.play();
-            //}
-            //else if (type == "click")
-            //{
-            //    sound1.URL = Application.StartupPath + "\\sound\\click.mp3";
-            //    sound1.controls.play();
-            //}
-            //else if (type == "lose")
-            //{
-            //    sound2.URL = Application.StartupPath + "\\sound\\lose.mp3";
-            //    sound2.controls.play();
-            //}
-            //else if (type == "win")
-            //{
-            //    sound2.URL = Application.StartupPath + "\\sound\\win.mp3";
-            //    sound2.controls.play();
-            //}
-            //else if (type == "play")
-            //{
-            //    sound2.URL = Application.StartupPath + "\\sound\\play.mp3";
-            //    sound2.controls.play();
-            //}
-            //else if (type == "game")
-            //{
-            //    sound2.URL = Application.StartupPath + "\\sound\\game.mp3";
-            //    sound2.controls.play();
-            //}
-            //else if (type == "stop")
-            //{
-            //    sound2.controls.stop();
-            //}
+            if (type == "fail")
+            {
+                sound1.URL = Application.StartupPath + "\\sound\\fail.mp3";
+                sound1.controls.play();
+            }
+            else if (type == "correct")
+            {
+                sound1.URL = Application.StartupPath + "\\sound\\correct.mp3";
+                sound1.controls.play();
+            }
+            else if (type == "button")
+            {
+                sound1.URL = Application.StartupPath + "\\sound\\button.mp3";
+                sound1.controls.play();
+            }
+            else if (type == "click")
+            {
+                sound1.URL = Application.StartupPath + "\\sound\\click.mp3";
+                sound1.controls.play();
+            }
+            else if (type == "lose")
+            {
+                sound2.URL = Application.StartupPath + "\\sound\\lose.mp3";
+                sound2.controls.play();
+            }
+            else if (type == "win")
+            {
+                sound2.URL = Application.StartupPath + "\\sound\\win.mp3";
+                sound2.controls.play();
+            }
+            else if (type == "play")
+            {
+                sound2.URL = Application.StartupPath + "\\sound\\play.mp3";
+                sound2.controls.play();
+            }
+            else if (type == "game")
+            {
+                sound2.URL = Application.StartupPath + "\\sound\\game.mp3";
+                sound2.controls.play();
+            }
+            else if (type == "stop")
+            {
+                sound2.controls.stop();
+            }
         }
         #endregion Sound
 
         public void SaveToFile()
         {
-            FileStream myFile = new FileStream("PlayerData", FileMode.Create, FileAccess.Write);
-            BinaryFormatter formatter = new BinaryFormatter();
-            formatter.Serialize(myFile, listOfPlayer);
-            myFile.Close();
+            try
+            {
+                var saveList = listOfPlayer
+                    .Select(p => new PlayerSaveData(p))
+                    .ToList();
+
+                using (var myFile = new FileStream("PlayerData.dat",
+                    FileMode.Create, FileAccess.Write))
+                {
+                    var formatter = new BinaryFormatter();
+                    formatter.Serialize(myFile, saveList);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal menyimpan: " + ex.Message, "ERROR");
+            }
         }
+
         public void ReadFromFile()
         {
-            if (File.Exists("PlayerData"))
+            if (!File.Exists("PlayerData.dat")) return; // ✅ nama file benar
+
+            try
             {
-                FileStream myFile = new FileStream("PlayerData", FileMode.Open, FileAccess.Read);
-                BinaryFormatter formatter = new BinaryFormatter();
-                listOfPlayer = (List<Players>)formatter.Deserialize(myFile);
-                myFile.Close();
+                using (var myFile = new FileStream("PlayerData.dat",
+                    FileMode.Open, FileAccess.Read))
+                {
+                    var formatter = new BinaryFormatter();
+                    var saveList = (List<PlayerSaveData>)formatter.Deserialize(myFile);
+
+                    // Kembalikan ke Players dengan gambar dari Resources
+                    listOfPlayer = saveList.Select(s =>
+                    {
+                        var p = new Players(s.Name, s.Income,
+                            s.Name == "Chelo"
+                                ? Properties.Resources.male
+                                : Properties.Resources.female);
+
+                        p.HighScore = new List<int>(s.HighScore);
+                        p.BestTime = s.BestTime
+                            .Select(t => new Time(t[0], t[1], t[2])).ToList();
+                        p.PrevTime = s.PrevTime
+                            .Select(t => new Time(t[0], t[1], t[2])).ToList();
+                        return p;
+                    }).ToList();
+
+                    if (listOfPlayer.Count > 0)
+                    {
+                        player = listOfPlayer[0];
+                        pictureBoxDisplayPlayer.Image = player.Picture;
+                        pictureBoxDisplayPlayer.SizeMode = PictureBoxSizeMode.StretchImage;
+                    }
+                }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Gagal membaca data: " + ex.Message, "ERROR");
+            }
+        }
+        private int CalculateScore()
+        {
+            int multiplier;
+            int totalCustomers;
+
+            if (easy)
+            {
+                multiplier = 25;
+                totalCustomers = custEasy;
+            }
+            else if (medium)
+            {
+                multiplier = 50;
+                totalCustomers = custMedium;
+            }
+            else if (hard)
+            {
+                multiplier = 75;
+                totalCustomers = custHard;
+            }
+            else
+            {
+                multiplier = 100;
+                totalCustomers = custImpossible;
+            }
+
+            int customerScore = totalCustomers * 100;
+            int timeBonus = time.Convert() * multiplier;
+            int incomeBonus = player.Income;
+
+            return customerScore + timeBonus + incomeBonus;
+        }
+
+        private void labelHighScoreEasy_Click(object sender, EventArgs e)
+        {
+
+        }
+        
+        private void FormGame_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            SaveToFile();
+        }
+
+        private void labelBestTimeEasy_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelDisplayDataPlayer_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
