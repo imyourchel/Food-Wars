@@ -1,17 +1,27 @@
 # 🍔 Food Wars
-
 A fast-paced food stall simulation game built with **C# Windows Forms**. Serve customers quickly and accurately before the timer runs out!
 
 ---
 
 ## 🎮 Gameplay Overview
-
 Players manage a food stall by fulfilling customer orders in the correct sequence. Each difficulty level increases the number of customers and time limit. Earn income by serving correct orders — and don't let customers wait too long or their mood will drop!
 
 ---
 
-## ✨ Features
+## 🛠️ Tech Stack
 
+| Layer | Technology |
+|---|---|
+| Language | C# (.NET Framework) |
+| UI Framework | Windows Forms (WinForms) |
+| Audio | WMPLib (Windows Media Player) |
+| Data Persistence | Binary Serialization (`BinaryFormatter`) |
+| IDE | Visual Studio |
+| OS | Windows only |
+
+---
+
+## ✨ Features
 - **4 Difficulty Levels** — Easy, Medium, Hard, Impossible
 - **3 Item Categories** — Foods (burger, salad, ice cream), Beverages (hot/cold coffee in S/M/L), Merchandise (Bear, Tumblr, Robot)
 - **Customer Emotion System** — Customers change emotion (happy → flat → angry) based on wait time
@@ -25,7 +35,6 @@ Players manage a food stall by fulfilling customer orders in the correct sequenc
 ---
 
 ## 🗂️ Project Structure
-
 ```
 Food-Wars/
 ├── Project/
@@ -57,7 +66,6 @@ Food-Wars/
 ---
 
 ## 🧮 Scoring Formula
-
 ```
 Score = (Total Customers × 100) + (Remaining Seconds × Multiplier) + Income Earned
 ```
@@ -71,17 +79,7 @@ Score = (Total Customers × 100) + (Remaining Seconds × Multiplier) + Income Ea
 
 ---
 
-## 🛠️ Requirements
-
-- Windows OS
-- .NET Framework (WinForms)
-- Windows Media Player library (`WMPLib`)
-- Visual Studio (recommended)
-
----
-
 ## 🚀 How to Run
-
 1. Clone or download this repository
 2. Open `Project.sln` in Visual Studio
 3. Build the solution (`Ctrl+Shift+B`)
@@ -91,6 +89,13 @@ Score = (Total Customers × 100) + (Remaining Seconds × Multiplier) + Income Ea
 
 ---
 
-## 👤 Author
+## 🔧 Requirements
+- Windows OS
+- .NET Framework (WinForms)
+- Windows Media Player library (`WMPLib`)
+- Visual Studio (recommended)
 
+---
+
+## 👤 Author
 **imyourchel** — Universitas Surabaya (UBAYA)
